@@ -1,7 +1,14 @@
 
 ---------------------------------
-Router: 1.1.1.1
-IP: 1.1.1.1
-Jerarquía: Núcleo
-Servicios: 
+Switch: sw_campus1_1
+IP: 192.168.10.1
+Jerarquía: Acceso
+Servicios: Conectividad LAN, VLANs
+---------------------------------
+
+---------------------------------
+Switch Multicapa: swm_campus1_core
+IP: 192.168.10.254
+Jerarquía: Distribución
+Servicios: Enrutamiento inter-VLAN, Conectividad WAN
 ---------------------------------
