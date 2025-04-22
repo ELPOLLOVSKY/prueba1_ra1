@@ -29,15 +29,15 @@ def ver_dispositivos():
         else:
             print("📭 No hay dispositivos registrados en este campus.")
     except (IndexError, ValueError):
-        print("⚠️ Opción inválida.")
+        print("Opción inválida.")
 
 def agregar_campus():
     nuevo = input("Nombre del nuevo campus: ").strip().lower()
     if nuevo and nuevo not in campus:
         campus.append(nuevo)
-        print(f"🏫 Campus '{nuevo}' agregado correctamente.")
+        print(f"Campus '{nuevo}' agregado correctamente.")
     else:
-        print("⚠️ Nombre inválido o campus ya existe.")
+        print(" Nombre inválido o campus ya existe.")
 
 def agregar_dispositivo():
     mostrar_campus()
@@ -45,25 +45,25 @@ def agregar_dispositivo():
         opcion = int(input("Seleccione campus para agregar dispositivo: ")) - 1
         nombre_archivo = campus[opcion] + ".txt"
     except (IndexError, ValueError):
-        print("⚠️ Selección inválida.")
+        print("Selección inválida.")
         return
 
     print("\nTipos de dispositivo:\n1. Router\n2. Switch\n3. Switch multicapa")
-    tipo = input("Seleccione el tipo de dispositivo: ")
+    tipo = input("Seleccionar el tipo de dispositivo: ")
 
     nombre = input("Nombre del dispositivo: ").strip()
 
-    ip = input("Ingrese la dirección IP del dispositivo: ").strip()
+    ip = input("ingresar la IP del dispositivo: ").strip()
     while not validar_ip(ip):
-        print("❗ IP inválida. Intente nuevamente.")
+        print(" IP no  valida. volver a intentar.")
         ip = input("Ingrese una IP válida: ").strip()
 
     print("\nSeleccione la capa jerárquica:\n1. Núcleo\n2. Distribución\n3. Acceso")
-    capa = input("Seleccione una opción: ")
+    capa = input("seleccionar una opción: ")
 
     servicios = []
     if tipo in ["2", "3"]:
-        print("\nSeleccione servicios (escriba el número, termine con 0):")
+        print("\nSeleccionar los servicios (escriba el número, termine con 0):")
         opciones = {
             "1": "Datos",
             "2": "VLAN",
@@ -100,16 +100,16 @@ def agregar_dispositivo():
         }.get(capa, "No definida") + "\n")
         f.write("Servicios: " + ", ".join(servicios) + "\n")
         f.write("---------------------------------\n")
-    print("✅ Dispositivo agregado correctamente.\n")
+    print("se agrego el dispositivo correctamente.\n")
 
 def menu():
     while True:
-        print("\n🤖 ¿Qué desea hacer?")
-        print("1. 📂 Ver los dispositivos")
-        print("2. 🏫 Ver los campus")
-        print("3. ➕ Añadir dispositivo")
-        print("4. 🆕 Añadir campus")
-        print("5. ❌ Salir")
+        print("\n ¿Qué desea hacer?")
+        print("1.  Ver los dispositivos")
+        print("2.  Ver los campus")
+        print("3.  Añadir dispositivo")
+        print("4.  Añadir campus")
+        print("5.  Salir")
         opcion = input("Seleccione una opción: ")
 
         if opcion == "1":
@@ -121,7 +121,7 @@ def menu():
         elif opcion == "4":
             agregar_campus()
         elif opcion == "5":
-            print("👋 Saliendo del programa.")
+            print("cerrando script.")
             break
         else:
             print("❌ Opción inválida. Intente nuevamente.")
