@@ -1,7 +1,23 @@
 
 ---------------------------------
-Switch: 1
-IP: 1.1.1.1
+Router: rtr_matriz_wan
+IP: 172.16.1.1
 Jerarquía: Núcleo
-Servicios: Datos
+Servicios: Enrutamiento WAN, Site-to-Site VPN
+---------------------------------
+
+
+---------------------------------
+Switch Multicapa: swm_matriz_core
+IP: 192.168.20.254
+Jerarquía: Distribución
+Servicios: Enrutamiento inter-VLAN, Servicios Financieros
+---------------------------------
+
+
+---------------------------------
+Switch: sw_matriz_ventas
+IP: 192.168.20.1
+Jerarquía: Acceso
+Servicios: Conectividad LAN para Ventas
 ---------------------------------
