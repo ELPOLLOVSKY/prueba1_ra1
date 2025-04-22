@@ -1,134 +1,130 @@
+
 import os
 import re
 
-# Carpeta donde se guardan los archivos
-CARPETA_DATOS = "datos"
-
-# Crear la carpeta si no existe
-if not os.path.exists(CARPETA_DATOS):
-    os.makedirs(CARPETA_DATOS)
+campus = ["zona core", "campus uno", "campus matriz", "sector outsourcing"]
 
 def validar_ip(ip):
-    patron = re.compile(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
-                        r'(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
-    return patron.match(ip)
+    patron = r"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"
+    if re.match(patron, ip):
+        partes = ip.split(".")
+        return all(0 <= int(parte) <= 255 for parte in partes)
+    return False
 
-def mostrar_menu():
-    print("\nMenú:")
-    print("1. Ver dispositivos")
-    print("2. Ver campus")
-    print("3. Añadir dispositivo")
-    print("4. Añadir campus")
-    print("5. Salir")
+def mostrar_campus():
+    print("\nLista de campus:")
+    for i, c in enumerate(campus, 1):
+        print(f"{i}. {c}")
+    print()
 
-def cargar_campus():
-    archivos = os.listdir(CARPETA_DATOS)
-    campus = [archivo[:-4] for archivo in archivos if archivo.endswith(".txt")]
-    return campus
-
-def ver_dispositivos(campus):
-    if not campus:
-        print("No hay campus registrados.")
-        return
-    for i, c in enumerate(campus):
-        print(f"{i+1}. {c}")
+def ver_dispositivos():
+    mostrar_campus()
     try:
-        opcion = int(input("Seleccione un campus: ")) - 1
-        if 0 <= opcion < len(campus):
-            archivo = os.path.join(CARPETA_DATOS, f"{campus[opcion]}.txt")
-            if os.path.exists(archivo):
-                with open(archivo, "r") as f:
-                    contenido = f.read().strip()
-                    if contenido:
-                        print("\nDispositivos registrados:")
-                        print(contenido)
-                    else:
-                        print("No hay dispositivos registrados aún.")
-            else:
-                print("Archivo del campus no encontrado.")
+        opcion = int(input("Seleccione un campus para ver sus dispositivos: ")) - 1
+        nombre_archivo = campus[opcion] + ".txt"
+        if os.path.exists(nombre_archivo):
+            with open(nombre_archivo, "r") as f:
+                print("\n--- Dispositivos Registrados ---\n")
+                print(f.read())
         else:
-            print("Opción fuera de rango.")
-    except ValueError:
-        print("Entrada inválida.")
+            print("📭 No hay dispositivos registrados en este campus.")
+    except (IndexError, ValueError):
+        print("⚠️ Opción inválida.")
 
-def ver_campus(campus):
-    if not campus:
-        print("No hay campus registrados.")
-        return
-    print("\nCampus registrados:")
-    for i, c in enumerate(campus):
-        print(f"{i+1}. {c}")
+def agregar_campus():
+    nuevo = input("Nombre del nuevo campus: ").strip().lower()
+    if nuevo and nuevo not in campus:
+        campus.append(nuevo)
+        print(f"🏫 Campus '{nuevo}' agregado correctamente.")
+    else:
+        print("⚠️ Nombre inválido o campus ya existe.")
 
-def añadir_dispositivo(campus):
-    if not campus:
-        print("No hay campus disponibles. Cree uno primero.")
-        return
-    for i, c in enumerate(campus):
-        print(f"{i+1}. {c}")
+def agregar_dispositivo():
+    mostrar_campus()
     try:
-        opcion = int(input("Seleccione un campus: ")) - 1
-        if 0 <= opcion < len(campus):
-            dispositivo = input("Tipo de dispositivo (Router/Switch/Switch Multicapa): ").strip()
-            nombre = input("Nombre del dispositivo: ").strip()
-
-            while True:
-                direccion_ip = input("Dirección IP (formato xxx.xxx.xxx.xxx): ").strip()
-                if validar_ip(direccion_ip):
-                    break
-                else:
-                    print("IP no válida. Intente nuevamente.")
-
-            vlans = input("VLAN(s) (separadas por coma): ").strip()
-            servicios = input("Servicios (Datos, VLAN, Trunking, Enrutamiento): ").strip()
-            capa = input("Capa (Núcleo, Distribución, Acceso): ").strip()
-
-            archivo = os.path.join(CARPETA_DATOS, f"{campus[opcion]}.txt")
-            with open(archivo, "a") as f:
-                f.write("\n-----------------------------\n")
-                f.write(f"Dispositivo: {dispositivo}\n")
-                f.write(f"Nombre: {nombre}\n")
-                f.write(f"IP: {direccion_ip}\n")
-                f.write(f"VLAN(s): {vlans}\n")
-                f.write(f"Servicios: {servicios}\n")
-                f.write(f"Capa: {capa}\n")
-                f.write("-----------------------------\n")
-            print("Dispositivo agregado correctamente.")
-        else:
-            print("Selección fuera de rango.")
-    except ValueError:
-        print("Entrada inválida.")
-
-def añadir_campus(campus):
-    nuevo = input("Nombre del nuevo campus: ").strip().replace(" ", "_")
-    if nuevo in campus:
-        print("El campus ya existe.")
+        opcion = int(input("Seleccione campus para agregar dispositivo: ")) - 1
+        nombre_archivo = campus[opcion] + ".txt"
+    except (IndexError, ValueError):
+        print("⚠️ Selección inválida.")
         return
-    archivo = os.path.join(CARPETA_DATOS, f"{nuevo}.txt")
-    try:
-        with open(archivo, "w") as f:
-            f.write(f"# Archivo de campus: {nuevo}\n")
-        print(f"Campus '{nuevo}' creado correctamente.")
-    except Exception as e:
-        print(f"Ocurrió un error al crear el archivo: {e}")
 
-def main():
+    print("\nTipos de dispositivo:\n1. Router\n2. Switch\n3. Switch multicapa")
+    tipo = input("Seleccione el tipo de dispositivo: ")
+
+    nombre = input("Nombre del dispositivo: ").strip()
+
+    ip = input("Ingrese la dirección IP del dispositivo: ").strip()
+    while not validar_ip(ip):
+        print("❗ IP inválida. Intente nuevamente.")
+        ip = input("Ingrese una IP válida: ").strip()
+
+    print("\nSeleccione la capa jerárquica:\n1. Núcleo\n2. Distribución\n3. Acceso")
+    capa = input("Seleccione una opción: ")
+
+    servicios = []
+    if tipo in ["2", "3"]:
+        print("\nSeleccione servicios (escriba el número, termine con 0):")
+        opciones = {
+            "1": "Datos",
+            "2": "VLAN",
+            "3": "Trunking",
+            "4": "Enrutamiento" if tipo == "3" else None
+        }
+        for k, v in opciones.items():
+            if v:
+                print(f"{k}. {v}")
+        while True:
+            s = input("Servicio: ")
+            if s == "0":
+                break
+            if s in opciones and opciones[s]:
+                servicios.append(opciones[s])
+    elif tipo == "1":
+        print("\nServicio disponible:\n1. Enrutamiento\n2. Salir")
+        if input("Seleccione una opción: ") == "1":
+            servicios.append("Enrutamiento")
+
+    with open(nombre_archivo, "a") as f:
+        f.write("\n---------------------------------\n")
+        tipo_str = {
+            "1": "Router",
+            "2": "Switch",
+            "3": "Switch Multicapa"
+        }.get(tipo, "Desconocido")
+        f.write(f"{tipo_str}: {nombre}\n")
+        f.write(f"IP: {ip}\n")
+        f.write("Jerarquía: " + {
+            "1": "Núcleo",
+            "2": "Distribución",
+            "3": "Acceso"
+        }.get(capa, "No definida") + "\n")
+        f.write("Servicios: " + ", ".join(servicios) + "\n")
+        f.write("---------------------------------\n")
+    print("✅ Dispositivo agregado correctamente.\n")
+
+def menu():
     while True:
-        campus = cargar_campus()
-        mostrar_menu()
-        opcion = input("Seleccione una opción: ").strip()
+        print("\n🤖 ¿Qué desea hacer?")
+        print("1. 📂 Ver los dispositivos")
+        print("2. 🏫 Ver los campus")
+        print("3. ➕ Añadir dispositivo")
+        print("4. 🆕 Añadir campus")
+        print("5. ❌ Salir")
+        opcion = input("Seleccione una opción: ")
+
         if opcion == "1":
-            ver_dispositivos(campus)
+            ver_dispositivos()
         elif opcion == "2":
-            ver_campus(campus)
+            mostrar_campus()
         elif opcion == "3":
-            añadir_dispositivo(campus)
+            agregar_dispositivo()
         elif opcion == "4":
-            añadir_campus(campus)
+            agregar_campus()
         elif opcion == "5":
-            print("Saliendo del programa.")
+            print("👋 Saliendo del programa.")
             break
         else:
-            print("Opción inválida.")
+            print("❌ Opción inválida. Intente nuevamente.")
 
 if __name__ == "__main__":
-    main()
+    menu()
