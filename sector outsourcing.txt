@@ -2,27 +2,14 @@
 Switch: sw_oriente
 IP: 192.168.30.1
 Jerarquía: Acceso
+VLAN : 40
 Servicios: Conectividad LAN para personal externo
----------------------------------
-
----------------------------------
-Router:  ro_oriente
-IP: 192.168.30.254
-Jerarquía: Distribución
-Servicios: Firewall, Control de acceso
 ---------------------------------
 
 ---------------------------------
 Switch: sw_matriz
-IP: 192.168.30.1
+IP: 192.168.30.10
 Jerarquía: Acceso
+VLAN :40
 Servicios: Conectividad LAN para personal externo
 ---------------------------------
-
----------------------------------
-Router:  ro_matriz
-IP: 192.168.30.254
-Jerarquía: Distribución
-Servicios: Firewall, Control de acceso
----------------------------------
-
