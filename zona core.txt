@@ -5,3 +5,10 @@ IP: 11.22.33.44
 Jerarquía: Núcleo
 Servicios: Enrutamiento
 ---------------------------------
+
+---------------------------------
+Router: 1
+IP: 1.1.1.1
+Jerarquía: Núcleo
+Servicios: 
+---------------------------------
