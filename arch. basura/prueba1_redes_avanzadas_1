@@ -122,76 +122,7 @@ def menu():
             agregar_campus()
         elif opcion == "5":
             print("👋 Saliendo del programa.")
-            break            def agregar_dispositivo():
-                mostrar_campus()
-                try:
-                    opcion = int(input("Seleccione campus para agregar dispositivo: ")) - 1
-                    if 0 <= opcion < len(campus):
-                        nombre_archivo = os.path.join("datos", f"{campus[opcion]}.txt")  # Incluye la carpeta 'datos'
-                        print(f"📂 Archivo seleccionado: {nombre_archivo}")  # Depuración
-                    else:
-                        print("⚠️ Selección fuera de rango.")
-                        return
-                except (IndexError, ValueError):
-                    print("⚠️ Selección inválida.")
-                    return
-            
-                print("\nTipos de dispositivo:\n1. Router\n2. Switch\n3. Switch multicapa")
-                tipo = input("Seleccione el tipo de dispositivo: ")
-            
-                nombre = input("Nombre del dispositivo: ").strip()
-            
-                ip = input("Ingrese la dirección IP del dispositivo: ").strip()
-                while not validar_ip(ip):
-                    print("❗ IP inválida. Intente nuevamente.")
-                    ip = input("Ingrese una IP válida: ").strip()
-            
-                print("\nSeleccione la capa jerárquica:\n1. Núcleo\n2. Distribución\n3. Acceso")
-                capa = input("Seleccione una opción: ")
-            
-                servicios = []
-                if tipo in ["2", "3"]:
-                    print("\nSeleccione servicios (escriba el número, termine con 0):")
-                    opciones = {
-                        "1": "Datos",
-                        "2": "VLAN",
-                        "3": "Trunking",
-                        "4": "Enrutamiento" if tipo == "3" else None
-                    }
-                    for k, v in opciones.items():
-                        if v:
-                            print(f"{k}. {v}")
-                    while True:
-                        s = input("Servicio: ")
-                        if s == "0":
-                            break
-                        if s in opciones and opciones[s]:
-                            servicios.append(opciones[s])
-                elif tipo == "1":
-                    print("\nServicio disponible:\n1. Enrutamiento\n2. Salir")
-                    if input("Seleccione una opción: ") == "1":
-                        servicios.append("Enrutamiento")
-            
-                try:
-                    with open(nombre_archivo, "a") as f:
-                        f.write("\n---------------------------------\n")
-                        tipo_str = {
-                            "1": "Router",
-                            "2": "Switch",
-                            "3": "Switch Multicapa"
-                        }.get(tipo, "Desconocido")
-                        f.write(f"{tipo_str}: {nombre}\n")
-                        f.write(f"IP: {ip}\n")
-                        f.write("Jerarquía: " + {
-                            "1": "Núcleo",
-                            "2": "Distribución",
-                            "3": "Acceso"
-                        }.get(capa, "No definida") + "\n")
-                        f.write("Servicios: " + ", ".join(servicios) + "\n")
-                        f.write("---------------------------------\n")
-                    print("✅ Dispositivo agregado correctamente.\n")
-                except Exception as e:
-                    print(f"❌ Error al escribir en el archivo: {e}")
+            break
         else:
             print("❌ Opción inválida. Intente nuevamente.")
 
