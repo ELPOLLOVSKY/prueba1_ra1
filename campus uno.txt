@@ -3,6 +3,7 @@
 Switch: sw_campus1_1
 IP: 192.168.10.1
 Jerarquía: Acceso
+vlans : 20
 Servicios: Conectividad LAN, VLANs
 ---------------------------------
 
