@@ -1,125 +1,130 @@
+
 import os
-from tkinter import Variable
-x = 0
-y = 0
-os.system("clear")
-campus = ("zona core", "campus uno", "campus matriz", "sector outsourcing")
-print ("que quiere hacer? ")
-print("1. Ver los dispositivos. \n2. Ver los campus. \n3. Añadir dispositivo. \n4 Añadir campus. \n5 Borrar dispositivo. \6 Borrar campus")
-selector = int()
-selector = input("elegir una opcion")
-if int (selector) == 1:
-    os.system("clear")
-    y = 1
-    selector = int()
-    print("elijir un campus \n")
-    while len (campus)>=y:
-        for item in campus:
-         print(str(y)+".", item)
-         y=y+1
-    selector = input ("\n Elija una opcion: ")
-    x = int()
-    x = int(selector)-1
-    if int(x) >= 0:
-            os.system("clear")
-            file= open(campus[int(x)]+".txt", "r")
-            for item in file:
-                item=item.strip()
-                print (item)
-                file.close()
-elif int (selector)==2:
-    os.system ("clear")
-    y = 1
-    selector = int()
-    while len(campus)>=y:
-        for item in campus:
-            print(str(y)+".", item)
-            y=y+1
-elif int (selector)==2:
-    os.system ("clear")
-    y = 1
-    selector = int()
+import re
+
+campus = ["zona core", "campus uno", "campus matriz", "sector outsourcing"]
+
+def validar_ip(ip):
+    patron = r"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"
+    if re.match(patron, ip):
+        partes = ip.split(".")
+        return all(0 <= int(parte) <= 255 for parte in partes)
+    return False
+
+def mostrar_campus():
+    print("\nLista de campus:")
+    for i, c in enumerate(campus, 1):
+        print(f"{i}. {c}")
+    print()
+
+def ver_dispositivos():
+    mostrar_campus()
+    try:
+        opcion = int(input("Seleccione un campus para ver sus dispositivos: ")) - 1
+        nombre_archivo = campus[opcion] + ".txt"
+        if os.path.exists(nombre_archivo):
+            with open(nombre_archivo, "r") as f:
+                print("\n--- Dispositivos Registrados ---\n")
+                print(f.read())
+        else:
+            print("📭 No hay dispositivos registrados en este campus.")
+    except (IndexError, ValueError):
+        print("⚠️ Opción inválida.")
+
+def agregar_campus():
+    nuevo = input("Nombre del nuevo campus: ").strip().lower()
+    if nuevo and nuevo not in campus:
+        campus.append(nuevo)
+        print(f"🏫 Campus '{nuevo}' agregado correctamente.")
+    else:
+        print("⚠️ Nombre inválido o campus ya existe.")
+
+def agregar_dispositivo():
+    mostrar_campus()
+    try:
+        opcion = int(input("Seleccione campus para agregar dispositivo: ")) - 1
+        nombre_archivo = campus[opcion] + ".txt"
+    except (IndexError, ValueError):
+        print("⚠️ Selección inválida.")
+        return
+
+    print("\nTipos de dispositivo:\n1. Router\n2. Switch\n3. Switch multicapa")
+    tipo = input("Seleccione el tipo de dispositivo: ")
+
+    nombre = input("Nombre del dispositivo: ").strip()
+
+    ip = input("Ingrese la dirección IP del dispositivo: ").strip()
+    while not validar_ip(ip):
+        print("❗ IP inválida. Intente nuevamente.")
+        ip = input("Ingrese una IP válida: ").strip()
+
+    print("\nSeleccione la capa jerárquica:\n1. Núcleo\n2. Distribución\n3. Acceso")
+    capa = input("Seleccione una opción: ")
+
     servicios = []
-    print("¿Donde agregar nuevo dispositivo? \n")
-    while len(campus)>=y:
-        for item in campus:
-            print (str(y)+".", item)
-            y=y+1
-    selector = input("\n Elija una opcion: ")
-    x = int()
-    x = int(selector)-1
-    if int(x) >=0:
-        os.system("clear")
-        file=open(campus[int(x)]+".txt", "a")
-        print ("elija un dispositivo: \n \n1. Router. \n2. Switch. \n3. Switch multicapa. \n")
-        variable1 = input("Elija su opcion: ")
-        os.system("clear")
-        print("Agregue el nombre de su dispositivo")
-        variable2 = input("Agregue su nombre: ")
+    if tipo in ["2", "3"]:
+        print("\nSeleccione servicios (escriba el número, termine con 0):")
+        opciones = {
+            "1": "Datos",
+            "2": "VLAN",
+            "3": "Trunking",
+            "4": "Enrutamiento" if tipo == "3" else None
+        }
+        for k, v in opciones.items():
+            if v:
+                print(f"{k}. {v}")
         while True:
-            print("¿Confirma este nombre? \n \n1. Si \n2. No \n")
-            variable3 = input("introduzca su respuesta")
-            if variable3 == "1":
-                print ("terminado")
+            s = input("Servicio: ")
+            if s == "0":
                 break
-        print("Elija una jerarquia: \n \n1. Nucleo, \n2. Acceso. \n3. Distribucion. \n")
-        variable3 = input("Elija una opcion: ")
-        os.system("clear")
-        file.write("\n---------------------------------\n")
-        if int(variable1) ==1:
-            print("Elija un servicio de red para el switch: \n1. Datos \n2. VLAN \n3. Trunking \n4. Salir \n")
-            variable4 = int()
-            while variable4 != 4:
-                variable4 = int(input("Elija una opcion"))
-                if variable4 == 1:
-                    servicios.append("Datos")
-                elif variable4 == 2:
-                    servicios.append("VLAN")
-                elif variable4 == 3:
-                 servicios.append("Trunking")
-            file.write("Switch: " + variable2)
-            if int (variable3) == 1:
-                file.write("\nJerarquia: Nucleo")
-            elif int(variable3) ==2:
-                file.write("\nJerarquia: Distribucion")
-            elif int (variable3) == 3:
-                file.write("\nJerarquia Acceso")
-            file.write("\Servicio: "+str(servicios))
-        elif int(variable1) ==2:
-           print("Elija un servicio de red para multicapa: \n1. Datos \n2. VLAN \n3. Trunking \n4. Enrutamiento \n5. Salir")
-           variable4 = int()
-           while variable4 != 5:
-                variable4 = int(input("Elija una opcion: "))
-                if variable4 == 1:
-                    servicios.append("Datos")
-                elif variable4 == 2:
-                    servicios.append("VLAN")
-                elif variable4 == 3:
-                    servicios.append("Trunking")
-                elif variable4 == 4:
-                    servicios.append("Enrutamiento")
-        file.write("Switch multicapa: " + variable2)
-        if int(variable3) == 1:
-                file.write("\nJerarquia: Nucleo")
-        elif int(variable3) == 2:
-                file.write("\nJerarquia: Distribucion")
-        elif int(variable3) == 3:
-                file.write("\nJerarquia: Acceso")
-        file.write("\nServicio: "+ str(servicios))
-    elif int(variable1) == 3:
-        variable4 = int()
-        print ("Elija un servicio de red para el router: \n1. Enrutamiento \n2. Salir") 
-        while variable4 != 2:
-            variable4 = int(input("Elija una opcion: "))
-            if variable4 == 1:
-                servicios.append("Datos")
-    file.write("Router: "+ variable2)
-    if int(variable3) ==1:
-        file.write("\nJerarquia: Nucleo")
-    elif int(variable3) ==2:
-        file.write("\nJerarquia: Distribucion")
-    elif int(variable3) ==3:
-        file.write("\nJerarquia: Acceso")
-file.write("\nServicio: "+ str(servicios))
-file.write("\n---------------------------------\n")
-file.close()
+            if s in opciones and opciones[s]:
+                servicios.append(opciones[s])
+    elif tipo == "1":
+        print("\nServicio disponible:\n1. Enrutamiento\n2. Salir")
+        if input("Seleccione una opción: ") == "1":
+            servicios.append("Enrutamiento")
+
+    with open(nombre_archivo, "a") as f:
+        f.write("\n---------------------------------\n")
+        tipo_str = {
+            "1": "Router",
+            "2": "Switch",
+            "3": "Switch Multicapa"
+        }.get(tipo, "Desconocido")
+        f.write(f"{tipo_str}: {nombre}\n")
+        f.write(f"IP: {ip}\n")
+        f.write("Jerarquía: " + {
+            "1": "Núcleo",
+            "2": "Distribución",
+            "3": "Acceso"
+        }.get(capa, "No definida") + "\n")
+        f.write("Servicios: " + ", ".join(servicios) + "\n")
+        f.write("---------------------------------\n")
+    print("✅ Dispositivo agregado correctamente.\n")
+
+def menu():
+    while True:
+        print("\n🤖 ¿Qué desea hacer?")
+        print("1. 📂 Ver los dispositivos")
+        print("2. 🏫 Ver los campus")
+        print("3. ➕ Añadir dispositivo")
+        print("4. 🆕 Añadir campus")
+        print("5. ❌ Salir")
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            ver_dispositivos()
+        elif opcion == "2":
+            mostrar_campus()
+        elif opcion == "3":
+            agregar_dispositivo()
+        elif opcion == "4":
+            agregar_campus()
+        elif opcion == "5":
+            print("👋 Saliendo del programa.")
+            break
+        else:
+            print("❌ Opción inválida. Intente nuevamente.")
+
+if __name__ == "__main__":
+    menu()
