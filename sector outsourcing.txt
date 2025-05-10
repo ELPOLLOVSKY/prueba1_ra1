@@ -1,0 +1,15 @@
+---------------------------------
+Switch: sw_oriente
+IP: 192.168.30.1
+Jerarquía: Acceso
+VLAN : 40
+Servicios: Conectividad LAN para personal externo
+---------------------------------
+
+---------------------------------
+Switch: sw_matriz
+IP: 192.168.30.10
+Jerarquía: Acceso
+VLAN :40
+Servicios: Conectividad LAN para personal externo
+---------------------------------

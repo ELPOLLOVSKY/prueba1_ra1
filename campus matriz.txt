@@ -1,0 +1,26 @@
+
+---------------------------------
+Switch : swm_backbone
+IP: 192.168.20.10
+Jerarquía: Distribución
+vlans : 30,10,20
+Servicios: Enrutamiento inter-VLAN, Servicios Financieros
+---------------------------------
+
+
+---------------------------------
+Switch : swm_matriz_finanzas-ventas
+IP: 192.168.20.20
+Jerarquía: Distribución
+vlans : 30,10
+Servicios: Enrutamiento inter-VLAN, Servicios Financieros
+---------------------------------
+
+
+---------------------------------
+Switch: sw_matriz_ventas-procesos
+IP: 192.168.20.30
+Jerarquía: Acceso
+vlans : 20,10
+Servicios: Conectividad LAN para Ventas
+---------------------------------
